@@ -22,7 +22,7 @@ export class Project {
 
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
-  @MinLength(1, { message: '项目名称不能为空' })
+  @MinLength(1, { message: 'project.err_name_empty' })
   name!: string;
 
   @IsNumber()
@@ -38,7 +38,7 @@ export class Project {
 
   assertAccessible(actor: Actor): void {
     if (this.ownerId === actor.id || actor.hasPermission('project:write')) return;
-    throw new DomainError(404, '项目不存在');
+    throw new DomainError(404, 'project.err_not_found');
   }
 }
 
@@ -47,10 +47,10 @@ export async function projectFromClient(
   raw: unknown,
   ownerId: string,
 ): Promise<Project> {
-  if (!raw || typeof raw !== 'object') throw new DomainError(400, '项目数据无效');
+  if (!raw || typeof raw !== 'object') throw new DomainError(400, 'project.err_invalid');
   const body = raw as Record<string, unknown>;
   if (typeof body.id === 'string' && body.id !== id) {
-    throw new DomainError(400, '项目数据无效');
+    throw new DomainError(400, 'project.err_invalid');
   }
 
   const project = plainToInstance(Project, {
@@ -102,7 +102,7 @@ function asTypeRecord(value: unknown): unknown {
 
 function validationMessage(errors: ValidationError[]): string {
   const messages = flatten(errors);
-  return messages.length > 0 ? messages.join('; ') : '项目数据无效';
+  return messages.length > 0 ? messages.join('; ') : 'project.err_invalid';
 }
 
 function flatten(errors: ValidationError[]): string[] {

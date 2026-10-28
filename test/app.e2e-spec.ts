@@ -105,4 +105,14 @@ describe('auth and projects (e2e)', () => {
       data: null,
     });
   });
+
+  it('translates the login error when the client asks for English', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .set('Accept-Language', 'en')
+      .send({ username: 'ada', password: 'secret1' })
+      .expect(401);
+
+    expect(response.body.message).toBe('Incorrect username or password');
+  });
 });

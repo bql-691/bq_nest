@@ -38,7 +38,7 @@ export class PrismaUserRepository extends IUserRepository {
         },
       });
     } catch (error) {
-      if (isUniqueConflict(error)) throw new DomainError(409, '用户名已存在');
+      if (isUniqueConflict(error)) throw new DomainError(409, 'security.err_username_exists');
       throw error;
     }
   }

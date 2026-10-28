@@ -1,5 +1,4 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { AllExceptionsFilter } from './all_exceptions_filter.js';
 import { ResponseInterceptor } from './response_interceptor.js';
 
 export function configureApp(app: INestApplication): void {
@@ -18,5 +17,4 @@ export function configureApp(app: INestApplication): void {
     }),
   );
   app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalFilters(new AllExceptionsFilter());
 }

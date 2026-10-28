@@ -21,6 +21,39 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+## 创建项目
+
+项目名是目标目录的最后一段，需为小写字母开头，只含小写字母、数字和连字符。两种模式都会把源码里的 `bq` 前缀换成项目名，复制 `.env`，安装依赖，并生成 Prisma 客户端和数据库。
+
+例如项目名是 `shop`，包名 `bq_nest` 变成 `shop_nest`。
+
+### 远程
+
+```bash
+curl -fsSL https://git.liangbaiqiang.com/bql/bq_nest/raw/branch/main/scripts/create.sh | bash -s -- shop
+```
+
+这会在当前目录生成 `shop`。需要 Node.js 和 curl。
+
+### 本地
+
+先克隆模板仓库，再在指定目录生成项目。本地模式不会下载，也不会改动模板仓库本身。需要 Node.js。
+
+```bash
+git clone https://git.liangbaiqiang.com/bql/bq_nest.git
+cd bq_nest
+bash scripts/create.sh local /path/to/shop
+```
+
+`/path/to/shop` 的项目名是 `shop`。目标目录不能已经存在，也不能放在模板仓库里面。
+
+生成之后：
+
+```bash
+cd /path/to/shop
+npm run start:dev
+```
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.

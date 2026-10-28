@@ -1,3 +1,4 @@
+import './i18n/index.js';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';

@@ -15,7 +15,7 @@ export class ProjectApplication {
 
   async get(actor: Actor, id: string): Promise<Record<string, unknown>> {
     const project = await this.projects.get(id);
-    if (!project) throw new DomainError(404, '项目不存在');
+    if (!project) throw new DomainError(404, 'project.err_not_found');
     project.assertAccessible(actor);
     return plainProject(project);
   }

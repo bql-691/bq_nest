@@ -25,6 +25,9 @@ src/features/project/
 ├── infra/
 │   └── persistence/
 │       └── prisma_project_repository.ts
+├── i18n/
+│   ├── index.ts
+│   └── locales/
 ├── presentation/
 │   └── project_controller.ts
 └── project_module.ts
@@ -37,7 +40,7 @@ src/features/project/
 项目模块按调用者维护 `Project` 聚合。
 
 - `list(actor)`：列出 `ownerId` 等于 `actor.id` 的项目，按 `updatedAt` 从新到旧。
-- `get(actor, id)`：读取一个项目。不存在，或调用者不能访问时，返回 404。
+- `get(actor, id)`：读取一个项目。不存在，或调用者不能访问时，返回 404。消息键是 `project.err_not_found`。没有 `Accept-Language` 时，响应里的消息是「项目不存在」。
 - `save(actor, id, raw)`：校验报文并保存整个聚合。新建时 `ownerId` 取 `actor.id`；已存在时沿用原来的 `ownerId`。
 
 这些方法在 `ProjectApplication`。返回值都经过 `plainProject`，因此响应里没有 `ownerId`。

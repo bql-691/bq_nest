@@ -27,17 +27,17 @@ export class SecurityApplication {
   }): Promise<void> {
     const username = input.username.trim();
     if (username.length < 3) {
-      throw new DomainError(400, '用户名长度不能少于 3 位');
+      throw new DomainError(400, 'security.err_username_length');
     }
     if (input.password.length < 6) {
-      throw new DomainError(400, '密码长度不能少于 6 位');
+      throw new DomainError(400, 'security.err_password_length');
     }
     if (input.password !== input.confirmPassword) {
-      throw new DomainError(400, '两次输入的密码不一致');
+      throw new DomainError(400, 'security.err_password_mismatch');
     }
 
     const existing = await this.users.findByUsername(username);
-    if (existing) throw new DomainError(409, '用户名已存在');
+    if (existing) throw new DomainError(409, 'security.err_username_exists');
 
     const passwordHash = await this.hasher.hash(input.password);
     await this.users.save(new UserEntity(randomUUID(), username, passwordHash, ['user']));
@@ -47,7 +47,7 @@ export class SecurityApplication {
     const user = await this.users.findByUsername(input.username.trim());
     const matched = user !== null && (await this.hasher.verify(input.password, user.passwordHash));
     if (!user || !matched) {
-      throw new DomainError(401, '用户名或密码错误');
+      throw new DomainError(401, 'security.err_invalid_credentials');
     }
 
     return {
@@ -58,7 +58,7 @@ export class SecurityApplication {
 
   async me(actor: Actor): Promise<PublicUser> {
     const user = await this.users.findById(actor.id);
-    if (!user) throw new DomainError(401, '登录已失效');
+    if (!user) throw new DomainError(401, 'security.err_session_expired');
     return user.toPublic();
   }
 }

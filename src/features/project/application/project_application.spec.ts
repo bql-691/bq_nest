@@ -68,7 +68,7 @@ describe('ProjectApplication', () => {
 
     await expect(application.get(stranger, 'p1')).rejects.toMatchObject({
       status: 404,
-      message: '项目不存在',
+      message: 'project.err_not_found',
     });
   });
 

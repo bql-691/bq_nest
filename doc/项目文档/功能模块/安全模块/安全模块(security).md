@@ -31,6 +31,9 @@ src/features/security/
 │   ├── jwt_token_issuer.ts
 │   └── persistence/
 │       └── prisma_user_repository.ts
+├── i18n/
+│   ├── index.ts
+│   └── locales/
 ├── presentation/
 │   ├── auth_controller.ts
 │   └── dto/
@@ -49,7 +52,7 @@ src/features/security/
 - `login(input)`：核对口令，签发访问凭证，返回 `{ token, user }`。
 - `me(actor)`：按 `Actor.id` 读取当前用户的公开资料。
 
-这些方法在 `SecurityApplication`。用户名去掉首尾空白后不少于 3 个字符，密码不少于 6 个字符，注册时两次密码相同。用户名已存在时返回 409。登录失败返回 401，消息是「用户名或密码错误」。
+这些方法在 `SecurityApplication`。用户名去掉首尾空白后不少于 3 个字符，密码不少于 6 个字符，注册时两次密码相同。用户名已存在时返回 409。登录失败返回 401。消息键是 `security.err_invalid_credentials`。没有 `Accept-Language` 时，响应里的消息是「用户名或密码错误」。
 
 ## 核心业务层
 

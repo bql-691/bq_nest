@@ -28,21 +28,21 @@ export class JwtAuthGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<Request & { user?: Actor }>();
     const header = request.headers.authorization;
-    if (!header?.startsWith('Bearer ')) throw new DomainError(401, '未登录');
+    if (!header?.startsWith('Bearer ')) throw new DomainError(401, 'security.err_unauthenticated');
 
     const token = header.slice('Bearer '.length).trim();
-    if (!token) throw new DomainError(401, '未登录');
+    if (!token) throw new DomainError(401, 'security.err_unauthenticated');
 
     let payload: AccessTokenPayload;
     try {
       payload = await this.jwt.verifyAsync<AccessTokenPayload>(token);
     } catch {
-      throw new DomainError(401, '登录已失效');
+      throw new DomainError(401, 'security.err_session_expired');
     }
 
-    if (!payload.sub) throw new DomainError(401, '登录已失效');
+    if (!payload.sub) throw new DomainError(401, 'security.err_session_expired');
     const user = await this.users.findById(payload.sub);
-    if (!user) throw new DomainError(401, '登录已失效');
+    if (!user) throw new DomainError(401, 'security.err_session_expired');
 
     request.user = new Actor(user.id, user.username, user.roles);
     return true;

@@ -1,3 +1,4 @@
+import './i18n/index.js';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../../app/prisma/prisma_module.js';
 import { ProjectApplication } from './application/project_application.js';

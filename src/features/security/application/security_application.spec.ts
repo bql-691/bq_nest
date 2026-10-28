@@ -74,7 +74,7 @@ describe('SecurityApplication', () => {
         password: 'secret1',
         confirmPassword: 'secret2',
       }),
-    ).rejects.toMatchObject({ status: 400, message: '两次输入的密码不一致' });
+    ).rejects.toMatchObject({ status: 400, message: 'security.err_password_mismatch' });
   });
 
   it('rejects a duplicated username', async () => {
@@ -104,10 +104,10 @@ describe('SecurityApplication', () => {
 
     await expect(application.login({ username: 'ada', password: 'nope' })).rejects.toMatchObject({
       status: 401,
-      message: '用户名或密码错误',
+      message: 'security.err_invalid_credentials',
     });
     await expect(
       application.login({ username: 'missing', password: 'secret1' }),
-    ).rejects.toMatchObject({ status: 401, message: '用户名或密码错误' });
+    ).rejects.toMatchObject({ status: 401, message: 'security.err_invalid_credentials' });
   });
 });

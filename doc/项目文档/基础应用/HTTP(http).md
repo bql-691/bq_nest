@@ -13,7 +13,7 @@ HTTP 把 Nest 应用收成前端认得的响应：成功是 `{ code: 200, messag
 
 | 入口                  | 文件                                    | 定义                                                                       |
 | --------------------- | --------------------------------------- | -------------------------------------------------------------------------- |
-| `configureApp(app)`   | `src/app/http/configure_app.ts`         | 打开 CORS，挂上校验、响应拦截器和异常过滤器                                |
+| `configureApp(app)`   | `src/app/http/configure_app.ts`         | 打开 CORS，挂上校验和响应拦截器                                            |
 | `ResponseInterceptor` | `src/app/http/response_interceptor.ts`  | 把控制器的返回值包进 `code`、`message`、`data`                             |
 | `AllExceptionsFilter` | `src/app/http/all_exceptions_filter.ts` | 把 `DomainError` 和 `HttpException` 写成同一形状。其余异常记日志并返回 500 |
 
@@ -21,7 +21,9 @@ HTTP 把 Nest 应用收成前端认得的响应：成功是 `{ code: 200, messag
 
 CORS 读取 `CORS_ORIGIN`。多个来源用逗号分隔。
 
-`ResponseInterceptor` 若发现返回值已经带有数字 `code` 和 `data`，就原样送出。
+`ResponseInterceptor` 若发现返回值已经带有数字 `code` 和 `data`，就原样送出。成功报文里的 `message: 'ok'` 保持原文。
+
+`AllExceptionsFilter` 由 `AppModule` 以 `APP_FILTER` 注册。它按请求的 `Accept-Language` 把消息键译成句子，见 [国际化](<./国际化(i18n).md>)。
 
 ## 使用示例
 
@@ -38,11 +40,11 @@ configureApp(app);
 
 ```ts
 if (!user || !matched) {
-  throw new DomainError(401, '用户名或密码错误');
+  throw new DomainError(401, 'security.err_invalid_credentials');
 }
 ```
 
-过滤器把它写成 `{ code: 401, message: '用户名或密码错误', data: null }`。
+没有 `Accept-Language` 时，过滤器把它写成 `{ code: 401, message: '用户名或密码错误', data: null }`。
 
 ## 时序
 
@@ -59,4 +61,4 @@ sequenceDiagram
 
 控制器返回业务数据后，`ResponseInterceptor` 包成 `{ code: 200, message: 'ok', data }`。`data` 为空时写成 `null`。
 
-异常不走这条成功路径。`DomainError` 使用它自己的 `status` 和 `message`。`HttpException` 使用它的状态码；校验失败的多条消息用 `'; '` 接成一条。其他异常返回 `{ code: 500, message: '服务器错误', data: null }`。
+异常不走这条成功路径。`DomainError` 使用它自己的 `status`，`message` 按本次请求翻译。`HttpException` 使用它的状态码；校验失败的多条消息用 `'; '` 接成一条，再逐段翻译。其他异常返回 `{ code: 500, message: '服务器错误', data: null }`。默认语言是中文。
